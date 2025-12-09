@@ -462,22 +462,25 @@ void QEmulatorScreen::contextMenuEvent(QContextMenuEvent *event)
 void QEmulatorScreen::keyPressEvent(QKeyEvent *event)
 {
     if (! g_okEmulatorRunning) return;
+    event->accept();
     if (event->isAutoRepeat()) return;
 
     unsigned char ukncscan = TranslateQtKeyToUkncKey(event->key());
     if (ukncscan == 0) return;
 
     Emulator_KeyEvent(ukncscan, true);
-    event->accept();
 }
 
 void QEmulatorScreen::keyReleaseEvent(QKeyEvent *event)
 {
+    if (! g_okEmulatorRunning) return;
+    event->accept();
+    if (event->isAutoRepeat()) return;
+
     unsigned char ukncscan = TranslateQtKeyToUkncKey(event->key());
     if (ukncscan == 0) return;
 
     Emulator_KeyEvent(ukncscan, false);
-    event->accept();
 }
 
 const unsigned char arrQtkey2UkncscanLat[256] =    // ËÀÒ
