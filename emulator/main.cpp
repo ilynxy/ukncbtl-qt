@@ -95,8 +95,9 @@ int main(int argc, char *argv[])
     }
 
     QTimer timerFrame;
+    timerFrame.setTimerType(Qt::PreciseTimer);
     QObject::connect(&timerFrame, SIGNAL(timeout()), &w, SLOT(emulatorFrame()), Qt::AutoConnection);
-    timerFrame.start(32);
+    timerFrame.start(40);
 
     int result = application.exec();
 
