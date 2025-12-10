@@ -90,7 +90,9 @@ public slots:
     void viewSizeUpscaled6();
     void soundEnabled();
     void emulatorSoundAY();
+#if UKNCBTL_ENABLE_SCRIPTING
     void scriptRun();
+#endif
     void consolePrint(const QString&);
 
 protected:

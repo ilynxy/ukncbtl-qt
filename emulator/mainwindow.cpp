@@ -21,7 +21,9 @@
 #include "qdebugview.h"
 #include "qdisasmview.h"
 #include "qmemoryview.h"
+#if UKNCBTL_ENABLE_SCRIPTING
 #include "qscripting.h"
+#endif
 #include "Emulator.h"
 
 MainWindow::MainWindow(QWidget *parent) :
@@ -46,7 +48,11 @@ MainWindow::MainWindow(QWidget *parent) :
     QObject::connect(ui->actionFileScreenshotAs, SIGNAL(triggered()), this, SLOT(saveScreenshotAs()));
     QObject::connect(ui->actionFileScreenshotToClipboard, SIGNAL(triggered()), this, SLOT(screenshotToClipboard()));
     QObject::connect(ui->actionFileScreenToClipboard, SIGNAL(triggered()), this, SLOT(screenTextToClipboard()));
+#if UKNCBTL_ENABLE_SCRIPTING
     QObject::connect(ui->actionScriptRun, SIGNAL(triggered()), this, SLOT(scriptRun()));
+#else
+    ui->actionScriptRun->setVisible(false);
+#endif
     QObject::connect(ui->actionFileExit, SIGNAL(triggered()), this, SLOT(close()));
     QObject::connect(ui->actionEmulatorRun, SIGNAL(triggered()), this, SLOT(emulatorRun()));
     QObject::connect(ui->actionEmulatorReset, SIGNAL(triggered()), this, SLOT(emulatorReset()));
@@ -800,6 +806,7 @@ void MainWindow::debugRemoveAllBreakpoints()
     m_console->execConsoleCommand("bc");
 }
 
+#if UKNCBTL_ENABLE_SCRIPTING
 void MainWindow::scriptRun()
 {
     if (g_okEmulatorRunning)
@@ -819,6 +826,7 @@ void MainWindow::scriptRun()
     QScriptWindow window(this);
     window.runScript(strScript);
 }
+#endif
 
 void MainWindow::consolePrint(const QString &message)
 {
