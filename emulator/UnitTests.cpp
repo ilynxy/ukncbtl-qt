@@ -1,6 +1,6 @@
 ﻿#include "stdafx.h"
 
-#if !defined(QT_NO_DEBUG)
+#if UKNCBTL_ENABLE_TESTING
 
 #include "UnitTests.h"
 
@@ -58,4 +58,4 @@ void TestCommon::testPrintBinaryValue()
     QCOMPARE((const char*)buffer, "1010011100101110");
 }
 
-#endif // if !defined(QT_NO_DEBUG)
+#endif // if UKNCBTL_ENABLE_TESTING

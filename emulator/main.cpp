@@ -17,9 +17,9 @@ static MainWindow *g_MainWindow;
 static QSettings *g_Settings;
 static QTranslator *g_Translator;
 
-#if !defined(QT_NO_DEBUG)
+#if UKNCBTL_ENABLE_TESTING
 extern void UnitTests_ExecuteAll();  // Defined in UnitTests.cpp
-#endif
+#endif // if UKNCBTL_ENABLE_TESTING
 
 void ParseCommandLine(int argc, char *argv[]);
 
@@ -47,13 +47,13 @@ const char CommandLineHelp[] =
 
 int main(int argc, char *argv[])
 {
-#if !defined(QT_NO_DEBUG)
+#if UKNCBTL_ENABLE_TESTING
     if (argc > 1 && _stricmp(argv[1], "-test") == 0)
     {
         UnitTests_ExecuteAll();
         return 0;
     }
-#endif
+#endif // if UKNCBTL_ENABLE_TESTING
 
     QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
     QApplication::setAttribute(Qt::AA_UseHighDpiPixmaps);

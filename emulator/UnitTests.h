@@ -1,7 +1,7 @@
 ﻿#ifndef UNITTESTS_H
 #define UNITTESTS_H
 
-#if !defined(QT_NO_DEBUG)
+#if UKNCBTL_ENABLE_TESTING
 
 #include <QtTest/QtTest>
 
@@ -16,6 +16,6 @@ private slots:
 };
 
 
-#endif // if !defined(QT_NO_DEBUG)
+#endif // if UKNCBTL_ENABLE_TESTING
 
 #endif // UNITTESTS_H
