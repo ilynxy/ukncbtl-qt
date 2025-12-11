@@ -357,7 +357,11 @@ void MainWindow::showFps(double framesPerSecond)
     }
     else
     {
+#if UKNCBTL_ENABLE_50HZ
+        double speed = framesPerSecond / 50.0 * 100.0;
+#else
         double speed = framesPerSecond / 25.0 * 100.0;
+#endif
         char buffer[16];
         _snprintf(buffer, 16, "%03.f%%", speed);
         m_statusLabelFrames->setText(buffer);

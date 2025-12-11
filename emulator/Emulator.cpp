@@ -410,7 +410,11 @@ bool Emulator_SystemFrame()
 
     // Calculate emulator uptime (25 frames per second)
     m_nUptimeFrameCount++;
+#if UKNCBTL_ENABLE_50HZ
+    if (m_nUptimeFrameCount >= 50)
+#else
     if (m_nUptimeFrameCount >= 25)
+#endif
     {
         m_dwEmulatorUptime++;
         m_nUptimeFrameCount = 0;

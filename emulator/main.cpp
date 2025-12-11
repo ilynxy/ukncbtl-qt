@@ -97,8 +97,11 @@ int main(int argc, char *argv[])
     QTimer timerFrame;
     timerFrame.setTimerType(Qt::PreciseTimer);
     QObject::connect(&timerFrame, SIGNAL(timeout()), &w, SLOT(emulatorFrame()), Qt::AutoConnection);
+#if UKNCBTL_ENABLE_50HZ
+    timerFrame.start(20);
+#else
     timerFrame.start(40);
-
+#endif
     int result = application.exec();
 
     Emulator_Done();

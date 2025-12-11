@@ -698,7 +698,11 @@ void CMotherboard::DebugTicks()
     { const uint16_t* pbps = m_PPUbps; while(*pbps != 0177777) { if (m_pPPU->GetPC() == *pbps++) return false; } } }
 bool CMotherboard::SystemFrame()
 {
+#if UKNCBTL_ENABLE_50HZ
+    int frameticks = m_lineticks;
+#else
     int frameticks = 0;  // count 20000 ticks
+#endif
 
     m_SoundChanges = 0;
     int soundSamplesPerFrame = SAMPLERATE / 25, soundBrasErr = 0;
@@ -933,7 +937,13 @@ bool CMotherboard::SystemFrame()
 
         frameticks++;
     }
+#if UKNCBTL_ENABLE_50HZ
+    while (frameticks % 10000);
+
+    m_lineticks = frameticks % 20000;
+#else
     while (frameticks < 20000);
+#endif
 
     return true;
 }
