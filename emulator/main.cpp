@@ -96,6 +96,8 @@ int main(int argc, char *argv[])
         AlertInfo(CommandLineHelp);
     }
 
+#if UKNCBTL_ENABLE_SPEEDCTL
+#else
     QTimer timerFrame;
     timerFrame.setTimerType(Qt::PreciseTimer);
     QObject::connect(&timerFrame, SIGNAL(timeout()), &w, SLOT(emulatorFrame()), Qt::AutoConnection);
@@ -103,6 +105,7 @@ int main(int argc, char *argv[])
     timerFrame.start(20);
 #else
     timerFrame.start(40);
+#endif
 #endif
     int result = application.exec();
 

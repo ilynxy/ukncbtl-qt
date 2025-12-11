@@ -11,6 +11,12 @@ class QDisasmView;
 class QMemoryView;
 class QLabel;
 
+#if UKNCBTL_ENABLE_SPEEDCTL
+class QTimer;
+class QAction;
+class QActionGroup;
+#endif
+
 namespace Ui
 {
     class MainWindow;
@@ -61,6 +67,11 @@ public slots:
     void emulatorRun();
     void emulatorReset();
     void emulatorAutostart();
+#if UKNCBTL_ENABLE_SPEEDCTL
+    void setEmulationSpeed(int percent);
+    void emulatorAutosuspend(bool checked);
+    void emulatorSpeed(QAction *action);
+#endif
     void emulatorFloppy0();
     void emulatorFloppy1();
     void emulatorFloppy2();
@@ -105,6 +116,12 @@ protected:
 private:
     Ui::MainWindow *ui;
     bool autoStartProcessed;
+
+#if UKNCBTL_ENABLE_SPEEDCTL
+    QTimer  *m_frameTimer;
+    QAction *m_autosuspendAction;
+    QActionGroup *m_speedActionGroup;
+#endif
 
     QEmulatorScreen *m_screen;
     QKeyboardView *m_keyboard;

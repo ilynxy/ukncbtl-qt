@@ -34,6 +34,46 @@ MainWindow::MainWindow(QWidget *parent) :
 
     this->setWindowTitle(tr("UKNC Back to Life"));
 
+#if UKNCBTL_ENABLE_SPEEDCTL
+    auto tm = ui->menuEmulator;
+    auto ip = ui->actionSoundEnabled;
+    foreach(QAction *action, tm->actions()) {
+        if (action->isSeparator()) {
+            ip = action;
+            break;
+        }
+    }
+
+    m_speedActionGroup = new QActionGroup(this);
+    static const int values[] = { 25, 50, 100, 200, 400, -1 };
+    for (const auto &v : values) {
+        QString s = (v < 0) ? tr("MAX") : QString::asprintf("%u %%", v);
+
+        auto action = new QAction(s, this);
+        action->setData(v);
+        action->setCheckable(true);
+
+        m_speedActionGroup->addAction(action);
+    }
+    auto sep = tm->insertSection(ip, "Speed");
+    tm->insertActions(ip, m_speedActionGroup->actions());
+
+    connect(m_speedActionGroup, &QActionGroup::triggered, this, &MainWindow::emulatorSpeed);
+
+    m_autosuspendAction = new QAction("AutoSuspend", this);
+    m_autosuspendAction->setCheckable(true);
+    tm->insertAction(sep, m_autosuspendAction);
+
+    connect(m_autosuspendAction, &QAction::triggered, this, &MainWindow::emulatorAutosuspend);
+
+
+    m_frameTimer = new QTimer(this);
+    m_frameTimer->setTimerType(Qt::PreciseTimer);
+
+    connect(m_frameTimer, &QTimer::timeout, this, &MainWindow::emulatorFrame);
+    m_frameTimer->start(20);
+#endif
+
     // Assign signals
 #if UKNCBTL_ENABLE_I18N
     QSignalMapper *langMapper = new QSignalMapper(this);
@@ -236,6 +276,18 @@ void MainWindow::restoreSettings()
     m_dockDebug->setVisible(Global_getSettings()->value("MainWindow/DebugView", false).toBool());
     m_dockDisasm->setVisible(Global_getSettings()->value("MainWindow/DisasmView", false).toBool());
     m_dockMemory->setVisible(Global_getSettings()->value("MainWindow/MemoryView", false).toBool());
+
+#if UKNCBTL_ENABLE_SPEEDCTL
+    m_autosuspendAction->setChecked(Settings_GetAutosuspend());
+    const auto percent = Settings_GetSpeed();
+    setEmulationSpeed(percent);
+    for(const auto a : m_speedActionGroup->actions()) {
+        if (a->data().toInt() == percent) {
+            a->setChecked(true);
+            break;
+        }
+    }
+#endif
 
     ui->actionSoundEnabled->setChecked(Settings_GetSound());
     ui->actionSoundAY->setChecked(Settings_GetSoundAY());
@@ -565,7 +617,12 @@ void MainWindow::emulatorFrame()
 {
     if (!g_okEmulatorRunning)
         return;
-    if (!isActiveWindow())
+
+    if (!isActiveWindow()
+#if UKNCBTL_ENABLE_SPEEDCTL
+        && Settings_GetAutosuspend()
+#endif
+        )
         return;
 
     if (!Emulator_SystemFrame())
@@ -596,6 +653,38 @@ void MainWindow::emulatorAutostart()
     Settings_SetAutostart(!Settings_GetAutostart());
     updateMenu();
 }
+
+#if UKNCBTL_ENABLE_SPEEDCTL
+void MainWindow::setEmulationSpeed(int percent)
+{
+    const int minInterval = 2;
+#if UKNCBTL_ENABLE_50HZ
+    const int defaultInterval = 20;
+#else
+    const int defaultInterval = 40;
+#endif
+
+    int interval = defaultInterval;
+    if (percent < 0)
+        interval = minInterval;
+    else if (percent > 0)
+        interval = defaultInterval * 100 / percent;
+
+    m_frameTimer->setInterval(interval);
+}
+
+void MainWindow::emulatorAutosuspend(bool checked)
+{
+    Settings_SetAutosuspend(checked);
+}
+
+void MainWindow::emulatorSpeed(QAction *action)
+{
+    const auto percent = action->data().toInt();
+    Settings_SetSpeed(percent);
+    setEmulationSpeed(percent);
+}
+#endif
 
 void MainWindow::soundEnabled()
 {

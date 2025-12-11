@@ -65,6 +65,35 @@ bool Settings_GetAutostart()
     return value.toBool();
 }
 
+#if UKNCBTL_ENABLE_SPEEDCTL
+
+void Settings_SetAutosuspend(bool enable)
+{
+    Global_getSettings()->setValue("Autosuspend", enable);
+}
+
+bool Settings_GetAutosuspend()
+{
+    QVariant value = Global_getSettings()->value("Autosuspend", false);
+    return value.toBool();
+}
+
+void Settings_SetSpeed(int percent)
+{
+    Global_getSettings()->setValue("SpeedPercent", percent);
+}
+
+int Settings_GetSpeed()
+{
+    QVariant value = Global_getSettings()->value("SpeedPercent", 100);
+    bool ok;
+    auto percent = value.toInt(&ok);
+    if (!ok)
+        percent = 100;
+    return percent;
+}
+#endif
+
 void Settings_SetSound(bool flag)
 {
     Global_getSettings()->setValue("Sound", flag);

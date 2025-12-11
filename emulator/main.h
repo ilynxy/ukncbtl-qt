@@ -35,6 +35,14 @@ void Settings_SetHardFilePath(int slot, const QString &sFilePath);
 QString Settings_GetHardFilePath(int slot);
 void Settings_SetAutostart(bool flag);
 bool Settings_GetAutostart();
+
+#if UKNCBTL_ENABLE_SPEEDCTL
+void Settings_SetAutosuspend(bool enable);
+bool Settings_GetAutosuspend();
+void Settings_SetSpeed(int percent);
+int Settings_GetSpeed();
+#endif
+
 void Settings_SetSound(bool flag);
 bool Settings_GetSound();
 void Settings_SetSoundAY(bool flag);
