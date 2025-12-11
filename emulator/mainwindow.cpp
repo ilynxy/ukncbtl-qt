@@ -35,12 +35,16 @@ MainWindow::MainWindow(QWidget *parent) :
     this->setWindowTitle(tr("UKNC Back to Life"));
 
     // Assign signals
+#if UKNCBTL_ENABLE_I18N
     QSignalMapper *langMapper = new QSignalMapper(this);
     QObject::connect(ui->actionLangEnglish, SIGNAL(triggered()), langMapper, SLOT(map()));
     langMapper->setMapping(ui->actionLangEnglish, "en");
     QObject::connect(ui->actionLangRussian, SIGNAL(triggered()), langMapper, SLOT(map()));
     langMapper->setMapping(ui->actionLangRussian, "ru");
     QObject::connect(langMapper, SIGNAL(mapped(QString)), this, SLOT(selectLanguage(QString)));
+#else
+    ui->menuLanguage->menuAction()->setVisible(false);
+#endif
 
     QObject::connect(ui->actionSaveStateImage, SIGNAL(triggered()), this, SLOT(saveStateImage()));
     QObject::connect(ui->actionLoadStateImage, SIGNAL(triggered()), this, SLOT(loadStateImage()));
@@ -368,12 +372,14 @@ void MainWindow::showFps(double framesPerSecond)
     }
 }
 
+#if UKNCBTL_ENABLE_I18N
 void MainWindow::selectLanguage(const QString& lang)
 {
     Global_getSettings()->setValue("Language", lang);
 
     AlertInfo(tr("Restart the application to apply the language selection."));
 }
+#endif
 
 void MainWindow::saveStateImage()
 {

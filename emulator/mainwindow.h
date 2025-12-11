@@ -47,7 +47,9 @@ public:
     void detachHardDrive(int slot);
 
 public slots:
+#if UKNCBTL_ENABLE_I18N
     void selectLanguage(const QString&);
+#endif
     void saveStateImage();
     void loadStateImage();
     void saveScreenshot();

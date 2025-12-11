@@ -64,11 +64,13 @@ int main(int argc, char *argv[])
     QSettings settings(QSettings::IniFormat, QSettings::UserScope, "Back to Life", "UKNCBTL");
     g_Settings = &settings;
 
+#if UKNCBTL_ENABLE_I18N
     QString strLang = g_Settings->value("Language", "en").toString();
     QString strLangFilename = QString(":/lang/ukncbtl_%1.qm").arg(strLang);
     g_Translator = new QTranslator();
     g_Translator->load(strLangFilename);
     g_Application->installTranslator(g_Translator);
+#endif
 
     MainWindow w;
     g_MainWindow = &w;
